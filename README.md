@@ -1,4 +1,4 @@
-# tokenizer
+# Tokenizer
 
 A simple and efficient tokenizer for natural language processing tasks. This project includes both a basic byte-level Byte Pair Encoding (BPE) tokenizer and a regex-based tokenizer.
 
