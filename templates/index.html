@@ -71,7 +71,7 @@
             <option value="regex">Regex</option>
         </select><br><br>
         <label for="train_text">Text to Train:</label><br>
-        <textarea id="train_text" name="train_text" rows="4" cols="50"></textarea><br><br>
+        <textarea id="train_text" name="train_text" rows="4" cols="50" style="height: auto;"></textarea><br><br>
         <button type="button" onclick="trainTokenizer()">Train</button>
         <span id="train-loading" style="display:none;">
             <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
@@ -82,7 +82,7 @@
     <h2>Tokenize Text</h2>
     <form id="tokenize-form">
         <label for="tokenize_text">Text to Tokenize:</label><br>
-        <textarea id="tokenize_text" name="tokenize_text" rows="4" cols="50"></textarea><br><br>
+        <textarea id="tokenize_text" name="tokenize_text" rows="4" cols="50" style="height: auto;"></textarea><br><br>
         <button type="button" onclick="tokenizeText()">Tokenize</button>
         <span id="tokenize-loading" style="display:none;">
             <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
@@ -93,7 +93,7 @@
     <button type="button" onclick="resetForms()">Reset</button>
 
     <h3>Tokens:</h3>
-    <pre id="tokens"></pre>
+    <pre id="tokens" style="height: auto;"></pre>
     <h3>Token Count:</h3>
     <div id="token-count"></div>
 
