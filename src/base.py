@@ -67,6 +67,7 @@ class Tokenizer:
     """Base class for Tokenizers"""
 
     def __init__(self):
+        super().__init__()
         # default: vocab size of 256 (all bytes), no merges, no patterns
         self.merges = {} # (int, int) -> int
         self.pattern = "" # str

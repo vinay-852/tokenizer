@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #tokens {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            form, #tokens {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tokenizer</h1>
+
+    <h2>Train Tokenizer</h2>
+    <form id="train-form">
+        <label for="model_name">Model Name:</label>
+        <select id="model_name" name="model_name">
+            <option value="basic">Basic</option>
+            <option value="regex">Regex</option>
+        </select><br><br>
+        <label for="train_text">Text to Train:</label><br>
+        <textarea id="train_text" name="train_text" rows="4" cols="50"></textarea><br><br>
+        <button type="button" onclick="trainTokenizer()">Train</button>
+        <span id="train-loading" style="display:none;">
+            <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+        </span>
+        <div id="train-result"></div>
+    </form>
+
+    <h2>Tokenize Text</h2>
+    <form id="tokenize-form">
+        <label for="tokenize_text">Text to Tokenize:</label><br>
+        <textarea id="tokenize_text" name="tokenize_text" rows="4" cols="50"></textarea><br><br>
+        <button type="button" onclick="tokenizeText()">Tokenize</button>
+        <span id="tokenize-loading" style="display:none;">
+            <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+        </span>
+        <div id="tokenize-result"></div>
+    </form>
+
+    <button type="button" onclick="resetForms()">Reset</button>
+
+    <h3>Tokens:</h3>
+    <pre id="tokens"></pre>
+    <h3>Token Count:</h3>
+    <div id="token-count"></div>
+
+    <script>
+        function trainTokenizer() {
+            const model_name = document.getElementById('model_name').value;
+            const text = document.getElementById('train_text').value;
+            document.getElementById('train-loading').style.display = 'inline';
+
+            fetch('/train', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ model_name, text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('train-result').textContent = data.status;
+                document.getElementById('train-loading').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('train-result').textContent = 'Error occurred during training.';
+                document.getElementById('train-loading').style.display = 'none';
+            });
+        }
+
+        function tokenizeText() {
+            const text = document.getElementById('tokenize_text').value;
+            document.getElementById('tokenize-loading').style.display = 'inline';
+
+            fetch('/tokenize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('tokens').textContent = JSON.stringify(data.tokens, null, 2);
+                document.getElementById('tokenize-result').textContent = 'Tokenization complete.';
+                document.getElementById('token-count').textContent = `Token Count: ${data.tokens.length}`;
+                document.getElementById('tokenize-loading').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('tokenize-result').textContent = 'Error occurred during tokenization.';
+                document.getElementById('tokenize-loading').style.display = 'none';
+            });
+        }
+
+        function resetForms() {
+            document.getElementById('train-form').reset();
+            document.getElementById('tokenize-form').reset();
+            document.getElementById('tokens').textContent = '';
+            document.getElementById('train-result').textContent = '';
+            document.getElementById('tokenize-result').textContent = '';
+            document.getElementById('token-count').textContent = '';
+        }
+
+        // Add animation for loading dots
+        setInterval(() => {
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.style.visibility = (dot.style.visibility === 'hidden' ? '' : 'hidden');
+            });
+        }, 500);
+    </script>
+</body>
+</html>
